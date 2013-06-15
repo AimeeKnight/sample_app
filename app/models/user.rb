@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
 
   before_save { email.downcase! } #forces uniqueness on the database level in case users submits in quick succession
 
+  #validates method also creates error object for the specific instance
   validates :name,  presence: true, length: { maximum: 50 } #Rails validates the presence of an attribute using the blank? method
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
