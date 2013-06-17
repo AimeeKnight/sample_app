@@ -6,7 +6,7 @@ SampleApp::Application.routes.draw do
   match '/signup',  to: 'users#new'
 
   match '/help',    to: 'static_pages#help'
- # matches ’/help' and routes it to the about action in the StaticPages controller
+ # matches ’/about' and routes it to the about action in the StaticPages controller
 
   match '/about',   to: 'static_pages#about'
   match '/contact', to: 'static_pages#contact'
