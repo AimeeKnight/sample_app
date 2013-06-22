@@ -1,9 +1,12 @@
 SampleApp::Application.routes.draw do
   resources :users
+  resources :sessions, only: [:new, :create, :destroy]
 
   root to: 'static_pages#home'
 
   match '/signup',  to: 'users#new'
+  match '/signin',  to: 'sessions#new'
+  match '/signout', to: 'sessions#destroy', via: :delete
 
   match '/help',    to: 'static_pages#help'
  # matches ’/about' and routes it to the about action in the StaticPages controller

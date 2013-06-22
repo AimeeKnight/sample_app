@@ -13,7 +13,11 @@ class User < ActiveRecord::Base
 	attr_accessible :name, :email, :password, :password_confirmation
 	has_secure_password
 
-  before_save { email.downcase! } #forces uniqueness on the database level in case users submits in quick succession
+  before_save { email.downcase! }
+  #forces uniqueness on the database level in case users submits in quick succession
+  # before_save { |user| user.email.downcase! } #alternate syntax
+  before_save :create_remember_token
+  # before saving, creates a remember token attribute
 
   #validates method also creates error object for the specific instance
   validates :name,  presence: true, length: { maximum: 50 } #Rails validates the presence of an attribute using the blank? method
@@ -24,4 +28,9 @@ class User < ActiveRecord::Base
   validates :password_confirmation, presence: true		
   after_validation { self.errors.messages.delete(:password_digest) }
 
+  private #below is hidden from instances
+
+    def create_remember_token
+      self.remember_token = SecureRandom.urlsafe_base64
+    end
 end
