@@ -24,9 +24,20 @@ describe User do
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
   it { should respond_to(:remember_token) }
+  it { should respond_to(:admin) }
   it { should respond_to(:authenticate) }
 
   it { should be_valid } #The first new example is just a sanity check, verifying that the @user object is initially valid:
+  it { should_not be_admin } #implies (via the RSpec boolean convention) that the user should have an admin? boolean method.
+
+  describe "with admin attribute set to 'true'" do
+    before do
+      @user.save! #exclamation point means method will throw an exception on failure rather than failing silently
+      @user.toggle!(:admin)
+    end
+
+    it { should be_admin }
+  end
 
   describe "when name in not present" do 
   	before { @user.name = " " }

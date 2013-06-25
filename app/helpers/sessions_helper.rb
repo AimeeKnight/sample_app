@@ -23,9 +23,23 @@ module SessionsHelper
   	#After the cookie is set, on subsequent page views we can find the user corresponding to the remember token created
   end
 
-    def sign_out
+  def current_user?(user)
+    user == current_user
+  end
+
+  def sign_out
     self.current_user = nil
     cookies.delete(:remember_token)
     #removes the remember token from the session
+  end
+
+   #if the user tries to edit/update their info and isn't signin in, they will be first be asked to resign in while their target location is saved. Then they will be redirected to their target location once they are successfully logged in. 
+  def redirect_back_or(default)
+    redirect_to(session[:return_to] || default)
+    session.delete(:return_to)
+  end
+
+  def store_location
+    session[:return_to] = request.url
   end
 end
