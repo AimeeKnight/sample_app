@@ -1,0 +1,15 @@
+<%= render 'shared/error_messages' %>
+
+<%= f.label :name %>
+<%= f.text_field :name %>
+<!-- <input id="user_name" name ="user[name]" size="30" type="text" />
+once submited,'name' will now hold the value of the users typed in name. These name values allow Rails to construct an initialization hash (via the params variable) for creating users using the values entered by the user-->
+
+<%= f.label :email %>
+<%= f.text_field :email %>
+
+<%= f.label :password %>
+<%= f.password_field :password %>
+
+<%= f.label :password_confirmation, "Confirm Password" %>
+<%= f.password_field :password_confirmation %>

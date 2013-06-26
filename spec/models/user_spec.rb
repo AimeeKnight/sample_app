@@ -30,6 +30,14 @@ describe User do
   it { should be_valid } #The first new example is just a sanity check, verifying that the @user object is initially valid:
   it { should_not be_admin } #implies (via the RSpec boolean convention) that the user should have an admin? boolean method.
 
+  describe "accessible attributes" do
+    it "should not allow access to admin" do
+      expect do
+        User.new(admin: true)
+      end.to raise_error(ActiveModel::MassAssignmentSecurity::Error)
+    end    
+  end
+
   describe "with admin attribute set to 'true'" do
     before do
       @user.save! #exclamation point means method will throw an exception on failure rather than failing silently

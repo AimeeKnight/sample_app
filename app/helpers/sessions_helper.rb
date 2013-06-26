@@ -10,7 +10,7 @@ module SessionsHelper
   end
 
   def signed_in?
-    !current_user.nil?
+    !current_user.nil? #if current_user is empty return false
   end
 
   def current_user=(user)
