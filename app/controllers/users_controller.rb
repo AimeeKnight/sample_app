@@ -10,6 +10,9 @@ class UsersController < ApplicationController
   
   def show
     @user = User.find(params[:id])
+    #paginate takes a hash argument with key :page and value equal to the page requested. User.paginate pulls the users out of the database one chunk at a time (30 by default), based on the :page parameter
+    #clicking next buttons will invoke another show view.
+    @microposts = @user.microposts.paginate(page: params[:page])
   end
 
   def new
@@ -51,14 +54,6 @@ class UsersController < ApplicationController
   end
 
   private
-
-    def signed_in_user
-      unless signed_in? #check if the seesion has a current_user
-        store_location
-        redirect_to signin_url, notice: "Please sign in."
-      end
-    end
-
     #calls current_user? helper method to check if the sessions current_user matches the user submitting an edit or update action
     def correct_user
       @user = User.find(params[:id])
