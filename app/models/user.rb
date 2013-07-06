@@ -13,10 +13,17 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :password, :password_confirmation
   has_secure_password
   has_many :microposts, dependent: :destroy
-
+  #if one of my followers destroyed, so if relationship
+  has_many :relationships, foreign_key: "follower_id", dependent: :destroy
+  has_many :followed_users, through: :relationships, source: :followed
+  has_many :reverse_relationships, foreign_key: "followed_id",
+                                   class_name:  "Relationship",
+                                   dependent:   :destroy
+  has_many :followers, through: :reverse_relationships, source: :follower
+  
   before_save { email.downcase! }
   #forces uniqueness on the database level in case users submits in quick succession
-  # before_save { |user| user.email.downcase! } #alternate syntax
+  #before_save { |user| user.email.downcase! } #alternate syntax
   before_save :create_remember_token
   # before saving, creates a remember token attribute
 
@@ -29,10 +36,22 @@ class User < ActiveRecord::Base
   validates :password_confirmation, presence: true		
   after_validation { self.errors.messages.delete(:password_digest) }
 
-  #called from static_pages controller
+  #called from static_pages controller, defined in Micropost model
   def feed
-    # This is preliminary. See "Following users" for the full implementation.
-    Micropost.where("user_id = ?", id)
+    Micropost.from_users_followed_by(self)
+  end
+
+  def following?(other_user)
+    #using explicit 'self' is matter of taste
+    relationships.find_by_followed_id(other_user.id)
+  end
+
+  def follow!(other_user)
+    relationships.create!(followed_id: other_user.id)
+  end
+
+  def unfollow!(other_user)
+    relationships.find_by_followed_id(other_user.id).destroy
   end
 
   private #below is hidden from instances

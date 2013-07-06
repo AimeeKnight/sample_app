@@ -1,0 +1,4 @@
+<%# in follow_form partial %>
+$("#follow_form").html("<%= escape_javascript(render('users/unfollow')) %>")
+<%# in stats partial %>
+$("#followers").html('<%= @user.followers.count %>')
