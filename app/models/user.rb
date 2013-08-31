@@ -13,22 +13,21 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :password, :password_confirmation
   has_secure_password
   has_many :microposts, dependent: :destroy
-  #if one of my followers destroyed, so if relationship
+  #if followers destroyed, so is relationship
   has_many :relationships, foreign_key: "follower_id", dependent: :destroy
   has_many :followed_users, through: :relationships, source: :followed
   has_many :reverse_relationships, foreign_key: "followed_id",
-                                   class_name:  "Relationship",
-                                   dependent:   :destroy
+                                    class_name: "Relationship",
+                                     dependent: :destroy
   has_many :followers, through: :reverse_relationships, source: :follower
   
   before_save { email.downcase! }
   #forces uniqueness on the database level in case users submits in quick succession
   #before_save { |user| user.email.downcase! } #alternate syntax
   before_save :create_remember_token
-  # before saving, creates a remember token attribute
 
   #validates method also creates error object for the specific instance
-  validates :name,  presence: true, length: { maximum: 50 } #Rails validates the presence of an attribute using the blank? method
+  validates :name,  presence: true, length: { maximum: 50 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
   									uniqueness: { case_sensitive: false } #matching emails will be invalid regradless of case
@@ -54,7 +53,7 @@ class User < ActiveRecord::Base
     relationships.find_by_followed_id(other_user.id).destroy
   end
 
-  private #below is hidden from instances
+  private
 
     def create_remember_token
       self.remember_token = SecureRandom.urlsafe_base64
