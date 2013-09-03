@@ -13,9 +13,14 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :password, :password_confirmation
   has_secure_password
   has_many :microposts, dependent: :destroy
+
   #if followers destroyed, so is relationship
+
+  #foreign key tells SQL to select from 'follower_id', all the corresponding users being 'followed'
   has_many :relationships, foreign_key: "follower_id", dependent: :destroy
   has_many :followed_users, through: :relationships, source: :followed
+  
+  #foreign key tells SQL to select from 'followed_id', all the corresponding users who are 'followers'
   has_many :reverse_relationships, foreign_key: "followed_id",
                                     class_name: "Relationship",
                                      dependent: :destroy
